@@ -43,7 +43,7 @@ This repository contains both the **application services** (e.g., payments API, 
 ## 📂 Repository Structure
 
 ```
- tmw-paylite-extended/
+ aws-paylite-project/
  ├── infra/                        # Infrastructure as Code (Terraform)
  │   ├── envs/                     # Environment-specific configs (e.g., prod-demo)
  │   └── modules/                  # Terraform reusable modules
@@ -65,8 +65,8 @@ This repository contains both the **application services** (e.g., payments API, 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/tmw-paylite-extended.git
-cd tmw-paylite-extended
+git clone https://github.com/<your-username>/aws-paylite-project.git
+cd aws-paylite-project
 ```
 
 ### 2. Infrastructure Deployment (Terraform)
@@ -126,7 +126,3 @@ https://<alb-dns-or-domain>/risk
 ## 🤝 Contributing
 
 Contributions are welcome! Please fork the repository and submit a PR for review.
-
----
-
-
