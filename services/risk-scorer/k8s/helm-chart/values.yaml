@@ -1,0 +1,6 @@
+image:
+  repository: <your-ecr-or-dockerhub>/risk-scorer
+  tag: latest
+
+service:
+  port: 8081

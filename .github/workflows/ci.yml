@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request: {}
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      ECR_PREFIX: ${{ vars.ECR_REPOSITORY_PREFIX || 'tmw' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: Install test deps
+        run: pip install pytest
+      - name: Run tests
+        run: pytest -q
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Get AWS Account ID
+        id: sts
+        run: |
+          echo "account=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_OUTPUT
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build & Push images
+        env:
+          REGISTRY: ${{ steps.sts.outputs.account }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+        run: |
+          TAG=${GITHUB_SHA::7}
+          for SVC in payments-api risk-scorer; do
+            docker build -t $SVC:latest services/$SVC
+            docker tag $SVC:latest $REGISTRY/${{ env.ECR_PREFIX }}/$SVC:latest
+            docker tag $SVC:latest $REGISTRY/${{ env.ECR_PREFIX }}/$SVC:$TAG
+            docker push $REGISTRY/${{ env.ECR_PREFIX }}/$SVC:latest
+            docker push $REGISTRY/${{ env.ECR_PREFIX }}/$SVC:$TAG
+          done

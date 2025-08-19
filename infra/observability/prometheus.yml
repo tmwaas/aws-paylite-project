@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'payments-v1'
+    static_configs:
+      - targets: ['payments-v1:8080']
+  - job_name: 'payments-v2'
+    static_configs:
+      - targets: ['payments-v2:8080']
+  - job_name: 'risk-scorer'
+    static_configs:
+      - targets: ['risk-scorer:8081']

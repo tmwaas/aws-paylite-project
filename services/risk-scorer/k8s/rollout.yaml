@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: risk-scorer
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: risk-scorer }
+  template:
+    metadata:
+      labels: { app: risk-scorer }
+    spec:
+      containers:
+      - name: risk-scorer
+        image: <your-ecr-or-dockerhub>/risk-scorer:latest
+        ports: [{ containerPort: 8081 }]
+        env:
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector:4318"
+  strategy:
+    canary:
+      steps:
+      - setWeight: 10
+      - pause: { duration: 60 }
+      - setWeight: 50
+      - pause: { duration: 120 }
+      - setWeight: 100

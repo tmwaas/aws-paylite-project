@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"ecr","Source":"../../modules/ecr_repos","Dir":"../../modules/ecr_repos"},{"Key":"host","Source":"../../modules/ec2_host","Dir":"../../modules/ec2_host"},{"Key":"net","Source":"../../modules/network","Dir":"../../modules/network"}]}
